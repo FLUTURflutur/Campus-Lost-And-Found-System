@@ -1,0 +1,251 @@
+/* Migrated to Tailwind CSS */
+
+.navbar-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Logo */
+.navbar-logo {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.navbar-logo:hover {
+  opacity: 0.9;
+}
+
+/* Center nav links */
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navbar-center a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.85);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: background 0.16s, color 0.16s;
+}
+
+.navbar-center a:hover,
+.navbar-center a.active {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* Right section */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.navbar-greeting {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.88rem;
+  margin-right: 4px;
+}
+
+.navbar-right a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.85);
+  padding: 7px 13px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: background 0.16s, color 0.16s;
+  white-space: nowrap;
+}
+
+.navbar-right a:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.navbar-right a.admin-link {
+  color: #fbbf24;
+}
+
+.navbar-right a.admin-link:hover {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+}
+
+.navbar-btn-login {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.16s, border-color 0.16s;
+  text-decoration: none;
+}
+
+.navbar-btn-login:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
+}
+
+.navbar-btn-register {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  transition: opacity 0.16s;
+  text-decoration: none;
+}
+
+.navbar-btn-register:hover {
+  opacity: 0.9;
+}
+
+.navbar-btn-logout {
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+
+.navbar-btn-logout:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+/* Hamburger */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  gap: 5px;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.16s;
+}
+
+.navbar-hamburger:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.22s, opacity 0.22s;
+}
+
+.navbar-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu */
+.navbar-mobile-menu {
+  display: none;
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: var(--primary-light);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  padding: 12px 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navbar-mobile-menu.open {
+  display: flex;
+}
+
+.navbar-mobile-menu a,
+.navbar-mobile-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 24px;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.14s;
+}
+
+.navbar-mobile-menu a:hover,
+.navbar-mobile-menu button:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.navbar-mobile-menu .mobile-admin-link {
+  color: #fbbf24;
+}
+
+.navbar-mobile-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  margin: 6px 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-center,
+  .navbar-right {
+    display: none;
+  }
+
+  .navbar-hamburger {
+    display: flex;
+  }
+
+  .navbar {
+    position: sticky;
+  }
+}

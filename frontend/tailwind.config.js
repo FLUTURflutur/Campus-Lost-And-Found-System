@@ -1,0 +1,76 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: 'class',
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Nunito', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      colors: {
+        coral: {
+          50:  '#fff1ef',
+          100: '#ffddd9',
+          200: '#ffbfb9',
+          300: '#ff9e96',
+          400: '#fb8b7f',
+          500: '#F97B6E',
+          600: '#e55f52',
+          700: '#c44438',
+          800: '#a0342b',
+          900: '#842b24',
+          950: '#471411',
+        },
+        seafoam: {
+          50:  '#f0f9f8',
+          100: '#d5efed',
+          200: '#afdeda',
+          300: '#8DC4BF',
+          400: '#65a9a4',
+          500: '#4a8e89',
+          600: '#39726e',
+          700: '#2e5b58',
+          800: '#244948',
+          900: '#1c3a39',
+          950: '#0d2221',
+        },
+        honey: {
+          50:  '#fffbf0',
+          100: '#fff3d4',
+          200: '#fee7a7',
+          300: '#FBC46A',
+          400: '#f8a93a',
+          500: '#ef8d15',
+          600: '#d4720d',
+          700: '#b05a0f',
+          800: '#8e4813',
+          900: '#743c13',
+          950: '#401e07',
+        },
+        eggplant: {
+          50:  '#f5f4f6',
+          100: '#ece9ee',
+          200: '#d8d3de',
+          300: '#bcb4c5',
+          400: '#9d92aa',
+          500: '#7f7290',
+          600: '#6a5d7b',
+          700: '#564D5E',
+          800: '#473e4e',
+          900: '#3b3341',
+          950: '#231d28',
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.15s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: '0', transform: 'translateY(-6px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};

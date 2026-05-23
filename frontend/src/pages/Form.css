@@ -1,0 +1,197 @@
+/* Migrated to Tailwind CSS */
+.UNUSED {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+.form-page-header {
+  margin-bottom: 28px;
+}
+
+.form-page-header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.form-page-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.form-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 36px;
+  border: 1.5px solid var(--border);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.form-field label .required {
+  color: var(--accent-lost);
+  margin-left: 2px;
+}
+
+.form-field textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.form-field-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Type radio group */
+.form-radio-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.16s, background 0.16s;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+  flex: 1;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.form-radio-option input[type="radio"] {
+  width: auto;
+  accent-color: var(--primary);
+}
+
+.form-radio-option.selected-lost {
+  border-color: var(--accent-lost);
+  background: #fff1f1;
+  color: var(--accent-lost);
+}
+
+.form-radio-option.selected-found {
+  border-color: var(--accent-found);
+  background: #f0fdf4;
+  color: var(--accent-found);
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.form-submit-btn {
+  flex: 1;
+  padding: 13px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+  min-width: 140px;
+}
+
+.form-submit-btn:hover {
+  background: var(--primary-hover);
+}
+
+.form-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-cancel-btn {
+  padding: 13px 20px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+
+.form-cancel-btn:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Success state */
+.form-success {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.form-success-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+
+.form-success h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.form-success p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  max-width: 380px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.form-error {
+  padding: 12px 16px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: var(--accent-lost);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .form-card {
+    padding: 24px 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

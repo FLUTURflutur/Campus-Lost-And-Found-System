@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm start *)",
+      "Bash(npx react-scripts *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(npm install *)",
+      "Bash(xargs grep *)",
+      "Bash(python3 *)",
+      "Bash(mysql -u root -phelloworld1234! campus_lost_found)",
+      "PowerShell(mysql *)"
+    ]
+  }
+}

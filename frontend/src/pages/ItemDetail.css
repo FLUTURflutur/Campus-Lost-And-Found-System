@@ -1,0 +1,247 @@
+/* Migrated to Tailwind CSS */
+.UNUSED {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
+}
+
+.item-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 28px;
+  transition: gap 0.16s;
+}
+
+.item-detail-back:hover {
+  gap: 10px;
+  color: var(--primary-hover);
+}
+
+.item-detail-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+
+.item-detail-image {
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  display: block;
+  background: var(--bg);
+}
+
+.item-detail-body {
+  padding: 32px;
+}
+
+.item-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.item-detail-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  flex: 1;
+  min-width: 200px;
+}
+
+.item-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+  margin: 24px 0;
+  padding: 24px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.item-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-detail-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.item-detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.item-detail-value {
+  font-size: 0.97rem;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.item-detail-description {
+  margin-top: 20px;
+}
+
+.item-detail-description h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.item-detail-description p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Claim section */
+.claim-section {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1.5px solid var(--border);
+}
+
+.claim-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.claim-section p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.claim-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.claim-form textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.claim-success-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  color: var(--accent-found);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.claim-already-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  color: var(--accent-pending);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.claim-login-prompt {
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  text-align: center;
+}
+
+.claim-login-prompt p {
+  margin-bottom: 14px;
+  color: var(--text-muted);
+}
+
+.claim-error {
+  padding: 10px 14px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: var(--accent-lost);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Status notice */
+.item-status-notice {
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.item-status-notice.claimed {
+  background: #ede9fe;
+  color: var(--accent-claimed);
+  border: 1px solid #c4b5fd;
+}
+
+.item-status-notice.pending {
+  background: #fef3c7;
+  color: var(--accent-pending);
+  border: 1px solid #fde68a;
+}
+
+/* Loading/error states */
+.item-detail-loading,
+.item-detail-error {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+
+.item-detail-error h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 12px 0 8px;
+}
+
+@media (max-width: 640px) {
+  .item-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .item-detail-body {
+    padding: 20px;
+  }
+
+  .item-detail-title {
+    font-size: 1.4rem;
+  }
+}
