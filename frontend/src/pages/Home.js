@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ItemCard from '../components/ItemCard';
+import { AlertTriangleIcon, SearchIcon } from '../components/ui/Icons';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
 import api from '../services/api';
@@ -29,6 +30,7 @@ export default function Home() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [page, setPage] = useState(1);
+  const [view, setView] = useState('grid');
 
   // Debounce search input by 300ms
   useEffect(() => {
@@ -179,6 +181,36 @@ export default function Home() {
                 Clear filters
               </button>
             )}
+
+            {/* View toggle */}
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-eggplant-800 rounded-lg p-1 ml-auto">
+              <button
+                onClick={() => setView('grid')}
+                title="Grid view"
+                className={`p-1.5 rounded-md transition-all ${
+                  view === 'grid'
+                    ? 'bg-white dark:bg-eggplant-700 text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setView('list')}
+                title="List view"
+                className={`p-1.5 rounded-md transition-all ${
+                  view === 'list'
+                    ? 'bg-white dark:bg-eggplant-700 text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -193,10 +225,10 @@ export default function Home() {
         {loading ? (
           <LoadingSpinner text="Loading items…" />
         ) : error ? (
-          <EmptyState icon="⚠️" title="Something went wrong" description={error} />
+          <EmptyState icon={<AlertTriangleIcon />} title="Something went wrong" description={error} />
         ) : items.length === 0 ? (
           <EmptyState
-            icon="🔍"
+            icon={<SearchIcon />}
             title="No items found"
             description={
               hasFilters
@@ -216,8 +248,11 @@ export default function Home() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {items.map(item => <ItemCard key={item.id} item={item} />)}
+            <div className={view === 'grid'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+              : 'flex flex-col gap-2'
+            }>
+              {items.map(item => <ItemCard key={item.id} item={item} view={view} />)}
             </div>
 
             {totalPages > 1 && (

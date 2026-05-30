@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { GraduationCapIcon } from './ui/Icons';
 
 function SunIcon() {
   return (
@@ -75,7 +76,7 @@ export default function Navbar() {
             onClick={close}
             className="flex items-center gap-2 font-bold text-eggplant-700 dark:text-coral-400 text-lg tracking-tight shrink-0"
           >
-            <span className="text-xl">🎓</span>
+            <GraduationCapIcon className="w-6 h-6" />
             CampusFind
           </Link>
 
@@ -111,9 +112,14 @@ export default function Navbar() {
                 <Link to="/profile" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Profile
                 </Link>
-                {auth.user.role === 'admin' && (
+                {(auth.user.role === 'admin' || auth.user.role === 'superadmin') && (
                   <Link to="/admin" className="text-sm font-semibold text-coral-600 dark:text-coral-400 hover:text-coral-700 dark:hover:text-coral-300 transition-colors">
                     Admin
+                  </Link>
+                )}
+                {auth.user.role === 'superadmin' && (
+                  <Link to="/superadmin" className="text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors">
+                    SuperAdmin
                   </Link>
                 )}
                 <button
@@ -173,8 +179,11 @@ export default function Navbar() {
               <NavLink to="/my-items" onClick={close} className={mobileLinkClass}>My Items</NavLink>
               <NavLink to="/my-claims" onClick={close} className={mobileLinkClass}>My Claims</NavLink>
               <NavLink to="/profile" onClick={close} className={mobileLinkClass}>Profile</NavLink>
-              {auth.user.role === 'admin' && (
+              {(auth.user.role === 'admin' || auth.user.role === 'superadmin') && (
                 <NavLink to="/admin" onClick={close} className={mobileLinkClass}>Admin Panel</NavLink>
+              )}
+              {auth.user.role === 'superadmin' && (
+                <NavLink to="/superadmin" onClick={close} className={mobileLinkClass}>SuperAdmin Panel</NavLink>
               )}
               <div className="my-1.5 border-t border-slate-100 dark:border-eggplant-700" />
               <button

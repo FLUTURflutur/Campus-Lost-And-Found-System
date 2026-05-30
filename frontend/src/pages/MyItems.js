@@ -4,6 +4,7 @@ import api from '../services/api';
 import Badge from '../components/ui/Badge';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
+import { AlertTriangleIcon, PackageIcon, MapPinIcon } from '../components/ui/Icons';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -54,10 +55,10 @@ export default function MyItems() {
       {loading ? (
         <LoadingSpinner text="Loading your items…" />
       ) : error ? (
-        <EmptyState icon="⚠️" title="Something went wrong" description={error} />
+        <EmptyState icon={<AlertTriangleIcon />} title="Something went wrong" description={error} />
       ) : items.length === 0 ? (
         <EmptyState
-          icon="📦"
+          icon={<PackageIcon />}
           title="No items yet"
           description="You haven't reported any lost or found items yet."
           action={
@@ -108,7 +109,7 @@ export default function MyItems() {
                       </td>
                       <td className="px-5 py-4 text-slate-500 dark:text-slate-300 hidden md:table-cell">
                         <span className="flex items-center gap-1 truncate max-w-[180px]">
-                          <span>📍</span>
+                          <MapPinIcon className="w-3.5 h-3.5 text-slate-400" />
                           {item.location}
                         </span>
                       </td>

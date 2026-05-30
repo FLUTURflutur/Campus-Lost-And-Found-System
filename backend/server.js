@@ -60,6 +60,7 @@ app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/items', require('./routes/items'));
 app.use('/api/claims', postLimiter, require('./routes/claims'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/superadmin', require('./routes/superadmin'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -6,10 +6,17 @@ const authMiddleware = (req, res, next) => {
 };
 
 const adminMiddleware = (req, res, next) => {
-    if (!req.session.userId || req.session.userRole !== 'admin') {
+    if (!req.session.userId || (req.session.userRole !== 'admin' && req.session.userRole !== 'superadmin')) {
         return res.status(403).json({ message: 'Admin access required' });
     }
     next();
 };
 
-module.exports = { authMiddleware, adminMiddleware };
+const superadminMiddleware = (req, res, next) => {
+    if (!req.session.userId || req.session.userRole !== 'superadmin') {
+        return res.status(403).json({ message: 'Superadmin access required' });
+    }
+    next();
+};
+
+module.exports = { authMiddleware, adminMiddleware, superadminMiddleware };

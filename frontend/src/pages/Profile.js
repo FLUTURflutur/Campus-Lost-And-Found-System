@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { CheckCircleIcon, AlertTriangleIcon } from '../components/ui/Icons';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -58,12 +59,12 @@ export default function Profile() {
 
         {success && (
           <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-sm ring-1 ring-emerald-200 dark:ring-emerald-800 mb-4">
-            ✅ {success}
+            <CheckCircleIcon className="w-4 h-4 shrink-0" /> {success}
           </div>
         )}
         {error && (
           <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-sm ring-1 ring-rose-200 dark:ring-rose-800 mb-4">
-            ⚠ {error}
+            <AlertTriangleIcon className="w-4 h-4 shrink-0" /> {error}
           </div>
         )}
 

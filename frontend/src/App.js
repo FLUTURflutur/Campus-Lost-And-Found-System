@@ -14,6 +14,8 @@ import MyItems from './pages/MyItems';
 import MyClaims from './pages/MyClaims';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/admin/AdminPanel';
+import SuperAdminRoute from './components/SuperAdminRoute';
+import SuperAdminPanel from './pages/superadmin/SuperAdminPanel';
 
 function App() {
   return (
@@ -38,6 +40,10 @@ function App() {
 
                 <Route element={<AdminRoute />}>
                   <Route path="/admin" element={<AdminPanel />} />
+                </Route>
+
+                <Route element={<SuperAdminRoute />}>
+                  <Route path="/superadmin" element={<SuperAdminPanel />} />
                 </Route>
               </Routes>
             </main>

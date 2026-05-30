@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GraduationCapIcon, AlertTriangleIcon } from '../components/ui/Icons';
 
 export default function Register() {
   const auth = useAuth();
@@ -45,7 +46,7 @@ export default function Register() {
 
           {/* Header */}
           <div className="text-center mb-7">
-            <div className="text-4xl mb-3 select-none">🎓</div>
+            <div className="flex justify-center mb-3 text-eggplant-600 dark:text-coral-400"><GraduationCapIcon className="w-12 h-12" /></div>
             <h1 className="text-xl font-bold text-slate-900 dark:text-white">Create account</h1>
             <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">Join CampusFind and help reunite lost items</p>
           </div>
@@ -53,7 +54,7 @@ export default function Register() {
           {/* Error */}
           {error && (
             <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-sm ring-1 ring-rose-200 dark:ring-rose-800 mb-4">
-              <span className="shrink-0">⚠</span>
+              <AlertTriangleIcon className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}

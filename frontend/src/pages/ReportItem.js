@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { BACKEND_URL } from '../services/api';
+import { SparklesIcon, AlertTriangleIcon } from '../components/ui/Icons';
 
 const CATEGORIES = [
   'Electronics', 'Clothing', 'Accessories', 'Books & Documents',
@@ -133,7 +134,7 @@ export default function ReportItem() {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <div className="bg-white dark:bg-eggplant-900 rounded-2xl shadow-sm ring-1 ring-slate-200/60 dark:ring-eggplant-600/80 p-10">
-          <div className="text-5xl mb-4 select-none">🎉</div>
+          <div className="flex justify-center mb-4 text-coral-500 dark:text-coral-400"><SparklesIcon className="w-14 h-14" /></div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Item Reported!</h2>
           <p className="text-sm text-slate-500 dark:text-slate-300 mb-7 max-w-xs mx-auto leading-relaxed">
             Your item has been submitted for review. It will appear in the browse list after an admin approves it.
@@ -171,7 +172,7 @@ export default function ReportItem() {
         {/* Error */}
         {error && (
           <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-sm ring-1 ring-rose-200 dark:ring-rose-800 mb-5">
-            <span className="shrink-0">⚠</span>
+            <AlertTriangleIcon className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -346,7 +347,7 @@ export default function ReportItem() {
 
             {uploadError && (
               <p className="text-xs text-rose-600 dark:text-rose-400 flex items-center gap-1">
-                <span>⚠</span> {uploadError}
+                <AlertTriangleIcon className="w-4 h-4 shrink-0" /> {uploadError}
               </p>
             )}
           </div>

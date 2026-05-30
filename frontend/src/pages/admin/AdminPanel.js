@@ -3,6 +3,7 @@ import api, { BACKEND_URL } from '../../services/api';
 import Badge from '../../components/ui/Badge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import EmptyState from '../../components/ui/EmptyState';
+import { CheckCircleIcon, XCircleIcon, CameraIcon, AlertTriangleIcon, PackageIcon, ClipboardIcon, CheckIcon, XMarkIcon } from '../../components/ui/Icons';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -21,7 +22,7 @@ function Toast({ message, type, onClose }) {
         ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-800'
         : 'bg-rose-50 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400 ring-1 ring-rose-200 dark:ring-rose-800'
     }`}>
-      <span>{type === 'success' ? '✅' : '❌'}</span>
+      {type === 'success' ? <CheckCircleIcon className="w-5 h-5 shrink-0" /> : <XCircleIcon className="w-5 h-5 shrink-0" />}
       <span>{message}</span>
       <button onClick={onClose} className="ml-1 opacity-60 hover:opacity-100 transition-opacity">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -294,10 +295,10 @@ export default function AdminPanel() {
           {itemsLoading ? (
             <LoadingSpinner text="Loading items…" />
           ) : itemsError ? (
-            <EmptyState icon="⚠️" title="Error" description={itemsError} />
+            <EmptyState icon={<AlertTriangleIcon />} title="Error" description={itemsError} />
           ) : filteredItems.length === 0 ? (
             <EmptyState
-              icon="📦"
+              icon={<PackageIcon />}
               title="No items here"
               description={
                 itemSearch.trim()
@@ -337,7 +338,7 @@ export default function AdminPanel() {
                                 />
                               ) : (
                                 <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-eggplant-800 flex items-center justify-center text-slate-400 text-lg">
-                                  📷
+                                  <CameraIcon className="w-6 h-6 text-slate-400" />
                                 </div>
                               )}
                             </td>
@@ -386,14 +387,14 @@ export default function AdminPanel() {
                                     disabled={!!loading}
                                     className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                                   >
-                                    {loading === 'approve' ? '…' : '✓ Approve'}
+                                    {loading === 'approve' ? '…' : <span className="flex items-center gap-1"><CheckIcon className="w-3.5 h-3.5" />Approve</span>}
                                   </button>
                                   <button
                                     onClick={() => handleItemDelete(item.id)}
                                     disabled={!!loading}
                                     className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                                   >
-                                    {loading === 'delete' ? '…' : '✕ Remove'}
+                                    {loading === 'delete' ? '…' : <span className="flex items-center gap-1"><XMarkIcon className="w-3.5 h-3.5" />Remove</span>}
                                   </button>
                                 </div>
                               ) : (
@@ -488,10 +489,10 @@ export default function AdminPanel() {
           {claimsLoading ? (
             <LoadingSpinner text="Loading claims…" />
           ) : claimsError ? (
-            <EmptyState icon="⚠️" title="Error" description={claimsError} />
+            <EmptyState icon={<AlertTriangleIcon />} title="Error" description={claimsError} />
           ) : filteredClaims.length === 0 ? (
             <EmptyState
-              icon="📋"
+              icon={<ClipboardIcon />}
               title="No claims found"
               description={
                 claimSearch.trim()
@@ -572,14 +573,14 @@ export default function AdminPanel() {
                                     disabled={!!claimActionLoading[claim.id]}
                                     className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                                   >
-                                    {claimActionLoading[claim.id] ? '…' : '✓ Approve'}
+                                    {claimActionLoading[claim.id] ? '…' : <span className="flex items-center gap-1"><CheckIcon className="w-3.5 h-3.5" />Approve</span>}
                                   </button>
                                   <button
                                     onClick={() => { setRejectingId(claim.id); setRejectDraft(''); }}
                                     disabled={!!claimActionLoading[claim.id]}
                                     className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                                   >
-                                    ✕ Reject
+                                    <span className="flex items-center gap-1"><XMarkIcon className="w-3.5 h-3.5" />Reject</span>
                                   </button>
                                 </div>
                               )
@@ -681,7 +682,7 @@ export default function AdminPanel() {
             <div className="flex flex-col gap-3">
               {pendingItems.length > 0 && (
                 <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800">
-                  <span className="text-lg shrink-0">📦</span>
+                  <PackageIcon className="w-5 h-5 shrink-0" />
                   <span className="text-sm font-medium flex-1">
                     <strong>{pendingItems.length}</strong> item{pendingItems.length !== 1 ? 's' : ''} waiting for approval.{' '}
                     <button onClick={() => setActiveTab('items')} className="font-bold underline hover:no-underline">
@@ -692,7 +693,7 @@ export default function AdminPanel() {
               )}
               {pendingClaims > 0 && (
                 <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800">
-                  <span className="text-lg shrink-0">📋</span>
+                  <ClipboardIcon className="w-5 h-5 shrink-0" />
                   <span className="text-sm font-medium flex-1">
                     <strong>{pendingClaims}</strong> claim{pendingClaims !== 1 ? 's' : ''} waiting for review.{' '}
                     <button onClick={() => setActiveTab('claims')} className="font-bold underline hover:no-underline">

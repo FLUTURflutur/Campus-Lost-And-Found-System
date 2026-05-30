@@ -4,6 +4,7 @@ import api from '../services/api';
 import Badge from '../components/ui/Badge';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
+import { AlertTriangleIcon, TagIcon, ChatBubbleIcon } from '../components/ui/Icons';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -39,10 +40,10 @@ export default function MyClaims() {
       {loading ? (
         <LoadingSpinner text="Loading your claims…" />
       ) : error ? (
-        <EmptyState icon="⚠️" title="Something went wrong" description={error} />
+        <EmptyState icon={<AlertTriangleIcon />} title="Something went wrong" description={error} />
       ) : claims.length === 0 ? (
         <EmptyState
-          icon="🏷️"
+          icon={<TagIcon />}
           title="No claims yet"
           description="You haven't claimed any items. Browse items to find something that belongs to you."
           action={
@@ -92,7 +93,7 @@ export default function MyClaims() {
                   {/* Rejection reason */}
                   {claim.status === 'rejected' && claim.rejection_reason && (
                     <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 text-xs ring-1 ring-rose-200 dark:ring-rose-800 mb-3">
-                      <span className="shrink-0 mt-0.5">💬</span>
+                      <ChatBubbleIcon className="w-4 h-4 shrink-0 mt-0.5" />
                       <span><span className="font-semibold">Reason: </span>{claim.rejection_reason}</span>
                     </div>
                   )}

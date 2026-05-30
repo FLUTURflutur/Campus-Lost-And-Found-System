@@ -8,7 +8,12 @@
       "Bash(xargs grep *)",
       "Bash(python3 *)",
       "Bash(mysql -u root -phelloworld1234! campus_lost_found)",
-      "PowerShell(mysql *)"
+      "PowerShell(mysql *)",
+      "PowerShell($mysql = \"C:\\\\Program Files\\\\MySQL\\\\MySQL Server 9.7\\\\bin\\\\mysql.exe\"; Get-Content \"C:\\\\Users\\\\flutu\\\\CampusLostFound\\\\database\\\\migration_003.sql\" -Raw | & $mysql -u root -phelloworld1234! campus_lost_found 2>&1)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:5000/\" -Method Get)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5000/\" -UseBasicParsing; $r.StatusCode; $r.Content)",
+      "PowerShell($mysql = \"C:\\\\Program Files\\\\MySQL\\\\MySQL Server 9.7\\\\bin\\\\mysql.exe\"; echo \"SHOW COLUMNS FROM users WHERE Field = 'role'; SHOW TABLES LIKE 'ads';\" | & $mysql -u root -phelloworld1234! campus_lost_found 2>&1 | Where-Object { $_ -notmatch 'Warning' })"
     ]
   }
 }

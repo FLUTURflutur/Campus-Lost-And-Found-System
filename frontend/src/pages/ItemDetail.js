@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Badge from '../components/ui/Badge';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import api, { BACKEND_URL } from '../services/api';
+import { FaceFrownIcon, MapPinIcon, CheckCircleIcon, ClockIcon, InfoCircleIcon, InboxIcon } from '../components/ui/Icons';
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -44,6 +45,15 @@ export default function ItemDetail() {
   const [resolving, setResolving] = useState(false);
   const [resolveSuccess, setResolveSuccess] = useState(false);
   const resolveSuccessTimer = useRef(null);
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = e => { if (e.key === 'Escape') setLightboxOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxOpen]);
 
   useEffect(() => {
     api.get(`/items/${id}`)
@@ -129,7 +139,7 @@ export default function ItemDetail() {
   if (error || !item) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-4">😕</div>
+        <div className="flex justify-center mb-4 text-slate-400 dark:text-slate-500"><FaceFrownIcon /></div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Item Not Found</h2>
         <p className="text-sm text-slate-500 dark:text-slate-300 mb-6">{error || 'This item does not exist.'}</p>
         <button
@@ -163,12 +173,41 @@ export default function ItemDetail() {
 
       <div className="bg-white dark:bg-eggplant-900 rounded-2xl shadow-sm ring-1 ring-slate-200/60 dark:ring-eggplant-600/80 overflow-hidden">
         {item.image_url && (
-          <img
-            src={item.image_url.startsWith('/') ? BACKEND_URL + item.image_url : item.image_url}
-            alt={item.title}
-            className="w-full h-56 sm:h-72 object-cover"
-            onError={e => { e.target.style.display = 'none'; }}
-          />
+          <button
+            onClick={() => setLightboxOpen(true)}
+            className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 cursor-zoom-in"
+            aria-label="View full-size image"
+          >
+            <img
+              src={item.image_url.startsWith('/') ? BACKEND_URL + item.image_url : item.image_url}
+              alt={item.title}
+              className="w-full h-56 sm:h-72 object-cover"
+              onError={e => { e.target.parentElement.style.display = 'none'; }}
+            />
+          </button>
+        )}
+
+        {lightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close image"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={item.image_url.startsWith('/') ? BACKEND_URL + item.image_url : item.image_url}
+              alt={item.title}
+              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            />
+          </div>
         )}
 
         <div className="p-6 sm:p-8">
@@ -194,7 +233,7 @@ export default function ItemDetail() {
             <div>
               <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Location</p>
               <p className="text-sm text-slate-800 dark:text-slate-200 font-medium flex items-center gap-1">
-                <span>📍</span>{item.location}
+                <MapPinIcon className="w-4 h-4 shrink-0" />{item.location}
               </p>
             </div>
             <div>
@@ -216,21 +255,21 @@ export default function ItemDetail() {
           {/* Status notices */}
           {item.status === 'resolved' && (
             <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-seafoam-50 dark:bg-seafoam-950/30 text-seafoam-700 dark:text-seafoam-400 text-sm ring-1 ring-seafoam-200 dark:ring-seafoam-800 mb-6">
-              <span className="text-base">✅</span>
+              <CheckCircleIcon className="w-5 h-5 shrink-0" />
               <span>This item has been marked as resolved by the reporter.</span>
             </div>
           )}
 
           {item.status === 'claimed' && (
             <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 text-sm ring-1 ring-violet-200 dark:ring-violet-800 mb-6">
-              <span className="text-base">✅</span>
+              <CheckCircleIcon className="w-5 h-5 shrink-0" />
               <span>This item has been claimed and is no longer available.</span>
             </div>
           )}
 
           {item.status === 'pending' && (
             <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 text-sm ring-1 ring-amber-200 dark:ring-amber-800 mb-6">
-              <span className="text-base">⏳</span>
+              <ClockIcon className="w-5 h-5 shrink-0" />
               <span>This item is pending admin review and not yet available to claim.</span>
             </div>
           )}
@@ -239,12 +278,12 @@ export default function ItemDetail() {
           <div className="border-t border-slate-100 dark:border-eggplant-700 pt-6 mt-2">
             {claimSuccess ? (
               <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-sm ring-1 ring-emerald-200 dark:ring-emerald-800">
-                <span className="text-base">✅</span>
+                <CheckCircleIcon className="w-5 h-5 shrink-0" />
                 <span>Your claim has been submitted! We'll notify you of the outcome.</span>
               </div>
             ) : alreadyClaimed ? (
               <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-50 dark:bg-eggplant-800 text-slate-600 dark:text-slate-300 text-sm ring-1 ring-slate-200 dark:ring-eggplant-600">
-                <span className="text-base">ℹ️</span>
+                <InfoCircleIcon className="w-5 h-5 shrink-0" />
                 <span>You have already submitted a claim for this item.</span>
               </div>
             ) : canClaim ? (
@@ -321,7 +360,7 @@ export default function ItemDetail() {
                     )}
                     {!itemClaimsLoading && itemClaims.some(c => c.status === 'approved') && (
                       <div className="mt-3 flex items-start gap-2.5 px-4 py-3 rounded-xl bg-eggplant-50 dark:bg-eggplant-800/60 text-eggplant-700 dark:text-eggplant-300 text-sm ring-1 ring-eggplant-200 dark:ring-eggplant-600">
-                        <span className="text-base shrink-0">📬</span>
+                        <InboxIcon className="w-5 h-5 shrink-0" />
                         <span>A claim has been approved — the item is now marked as claimed. You can contact the claimant to coordinate pickup.</span>
                       </div>
                     )}
@@ -331,7 +370,7 @@ export default function ItemDetail() {
                 <div className="flex flex-col gap-3">
                   {resolveSuccess && (
                     <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-seafoam-50 dark:bg-seafoam-950/30 text-seafoam-700 dark:text-seafoam-400 text-xs font-semibold ring-1 ring-seafoam-200 dark:ring-seafoam-800">
-                      <span>✅</span>
+                      <CheckCircleIcon className="w-5 h-5 shrink-0" />
                       <span>Marked as resolved!</span>
                     </div>
                   )}
