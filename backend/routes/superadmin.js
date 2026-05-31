@@ -148,11 +148,46 @@ router.get('/items', async (req, res) => {
         );
         const [items] = await db.query(
             `SELECT i.*, u.username AS reporter_name FROM items i
-             LEFT JOIN users u ON u.id = i.user_id
+             LEFT JOIN users u ON u.id = i.reported_by
              ${where} ORDER BY i.id DESC LIMIT ? OFFSET ?`,
             [...params, limit, offset]
         );
         res.json({ items, total, page: parseInt(page), pages: Math.ceil(total / limit) || 1 });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.put('/items/:id', async (req, res) => {
+    try {
+        const { title, description, category, type, location, status, image_url } = req.body;
+        const updates = [];
+        const params = [];
+        if (title !== undefined) {
+            if (!title.trim() || title.length > 150) return res.status(400).json({ message: 'Title must be 1–150 characters' });
+            updates.push('title = ?'); params.push(title.trim());
+        }
+        if (description !== undefined) {
+            if (!description.trim() || description.length > 2000) return res.status(400).json({ message: 'Description must be 1–2000 characters' });
+            updates.push('description = ?'); params.push(description.trim());
+        }
+        if (category !== undefined) { updates.push('category = ?'); params.push(category.trim()); }
+        if (type !== undefined) {
+            if (!['lost', 'found'].includes(type)) return res.status(400).json({ message: 'Type must be lost or found' });
+            updates.push('type = ?'); params.push(type);
+        }
+        if (location !== undefined) { updates.push('location = ?'); params.push(location.trim()); }
+        if (status !== undefined) {
+            if (!['pending', 'approved', 'claimed', 'resolved'].includes(status)) return res.status(400).json({ message: 'Invalid status' });
+            updates.push('status = ?'); params.push(status);
+        }
+        if (image_url !== undefined) { updates.push('image_url = ?'); params.push(image_url || null); }
+        if (updates.length === 0) return res.status(400).json({ message: 'Nothing to update' });
+        params.push(req.params.id);
+        const [result] = await db.query(`UPDATE items SET ${updates.join(', ')} WHERE id = ?`, params);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Item not found' });
+        res.json({ message: 'Item updated' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
@@ -217,74 +252,33 @@ router.get('/claims', async (req, res) => {
     }
 });
 
+router.put('/claims/:id', async (req, res) => {
+    try {
+        const { status, rejection_reason, message } = req.body;
+        const updates = [];
+        const params = [];
+        if (status !== undefined) {
+            if (!['pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid status' });
+            updates.push('status = ?'); params.push(status);
+        }
+        if (rejection_reason !== undefined) { updates.push('rejection_reason = ?'); params.push(rejection_reason || null); }
+        if (message !== undefined) { updates.push('message = ?'); params.push(message.trim()); }
+        if (updates.length === 0) return res.status(400).json({ message: 'Nothing to update' });
+        params.push(req.params.id);
+        const [result] = await db.query(`UPDATE claims SET ${updates.join(', ')} WHERE id = ?`, params);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Claim not found' });
+        res.json({ message: 'Claim updated' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 router.delete('/claims/:id', async (req, res) => {
     try {
         const [result] = await db.query('DELETE FROM claims WHERE id = ?', [req.params.id]);
         if (result.affectedRows === 0) return res.status(404).json({ message: 'Claim not found' });
         res.json({ message: 'Claim deleted' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-// ─── Ads ──────────────────────────────────────────────────────────────────────
-
-router.get('/ads', async (req, res) => {
-    try {
-        const [ads] = await db.query(
-            `SELECT a.*, u.username AS created_by_name FROM ads a
-             JOIN users u ON u.id = a.created_by ORDER BY a.id DESC`
-        );
-        res.json(ads);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-router.post('/ads', async (req, res) => {
-    try {
-        const { title, body, link_url, image_url, active = true } = req.body;
-        if (!title || !body) return res.status(400).json({ message: 'Title and body are required' });
-        if (title.length > 200) return res.status(400).json({ message: 'Title must be 200 characters or less' });
-        const [result] = await db.query(
-            'INSERT INTO ads (title, body, link_url, image_url, active, created_by) VALUES (?, ?, ?, ?, ?, ?)',
-            [title.trim(), body.trim(), link_url || null, image_url || null, active ? 1 : 0, req.session.userId]
-        );
-        res.status(201).json({ message: 'Ad created', adId: result.insertId });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-router.put('/ads/:id', async (req, res) => {
-    try {
-        const { title, body, link_url, image_url, active } = req.body;
-        const updates = [];
-        const params = [];
-        if (title !== undefined) { updates.push('title = ?'); params.push(title.trim()); }
-        if (body !== undefined) { updates.push('body = ?'); params.push(body.trim()); }
-        if (link_url !== undefined) { updates.push('link_url = ?'); params.push(link_url || null); }
-        if (image_url !== undefined) { updates.push('image_url = ?'); params.push(image_url || null); }
-        if (active !== undefined) { updates.push('active = ?'); params.push(active ? 1 : 0); }
-        if (updates.length === 0) return res.status(400).json({ message: 'Nothing to update' });
-        params.push(req.params.id);
-        const [result] = await db.query(`UPDATE ads SET ${updates.join(', ')} WHERE id = ?`, params);
-        if (result.affectedRows === 0) return res.status(404).json({ message: 'Ad not found' });
-        res.json({ message: 'Ad updated' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-router.delete('/ads/:id', async (req, res) => {
-    try {
-        const [result] = await db.query('DELETE FROM ads WHERE id = ?', [req.params.id]);
-        if (result.affectedRows === 0) return res.status(404).json({ message: 'Ad not found' });
-        res.json({ message: 'Ad deleted' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });

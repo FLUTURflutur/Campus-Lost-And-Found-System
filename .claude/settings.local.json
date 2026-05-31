@@ -13,7 +13,16 @@
       "PowerShell(Stop-Process *)",
       "PowerShell(Invoke-RestMethod -Uri \"http://localhost:5000/\" -Method Get)",
       "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5000/\" -UseBasicParsing; $r.StatusCode; $r.Content)",
-      "PowerShell($mysql = \"C:\\\\Program Files\\\\MySQL\\\\MySQL Server 9.7\\\\bin\\\\mysql.exe\"; echo \"SHOW COLUMNS FROM users WHERE Field = 'role'; SHOW TABLES LIKE 'ads';\" | & $mysql -u root -phelloworld1234! campus_lost_found 2>&1 | Where-Object { $_ -notmatch 'Warning' })"
+      "PowerShell($mysql = \"C:\\\\Program Files\\\\MySQL\\\\MySQL Server 9.7\\\\bin\\\\mysql.exe\"; echo \"SHOW COLUMNS FROM users WHERE Field = 'role'; SHOW TABLES LIKE 'ads';\" | & $mysql -u root -phelloworld1234! campus_lost_found 2>&1 | Where-Object { $_ -notmatch 'Warning' })",
+      "Bash(/c/xampp/mysql/bin/mysqldump.exe -h 127.0.0.1 -P 3306 -u root --password=\"\" campus_lost_found)",
+      "Bash(/c/xampp/mysql/bin/mysqldump.exe -h 127.0.0.1 -P 3306 -u root -phelloworld1234! campus_lost_found)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 9.7/bin/mysqldump.exe\" -h 127.0.0.1 -P 3306 -u root -phelloworld1234! campus_lost_found)",
+      "Bash(/c/xampp/mysql/bin/mysql.exe -h 127.0.0.1 -P 3307 -u root -phelloworld1234! campus_lost_found)",
+      "Bash(/c/xampp/mysql/bin/mysql.exe -h 127.0.0.1 -P 3307 -u root campus_lost_found)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 9.7/bin/mysql.exe\" -h 127.0.0.1 -P 3307 -u root campus_lost_found)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 9.7/bin/mysqldump.exe\" -h 127.0.0.1 -P 3306 -u root -phelloworld1234! --set-gtid-purged=OFF campus_lost_found)",
+      "Bash(/c/xampp/mysql/bin/mysql.exe *)",
+      "Bash(grep *)"
     ]
   }
 }

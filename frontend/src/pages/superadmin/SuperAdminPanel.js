@@ -81,7 +81,6 @@ const TABS = [
   { key: 'users',  label: 'Users' },
   { key: 'items',  label: 'Items' },
   { key: 'claims', label: 'Claims' },
-  { key: 'ads',    label: 'Ads' },
 ];
 
 export default function SuperAdminPanel() {
@@ -171,6 +170,8 @@ export default function SuperAdminPanel() {
   const [saItemStatus, setSaItemStatus] = useState('');
   const [saItemLoading, setSaItemLoading] = useState(false);
   const [saItemActionLoading, setSaItemActionLoading] = useState({});
+  const [editItem, setEditItem] = useState(null);
+  const [editItemDraft, setEditItemDraft] = useState({});
 
   const fetchSaItems = useCallback(() => {
     setSaItemLoading(true);
@@ -181,6 +182,17 @@ export default function SuperAdminPanel() {
   }, [saItemSearch, saItemPage, saItemStatus]);
 
   useEffect(() => { if (tab === 'items') fetchSaItems(); }, [tab, fetchSaItems]);
+
+  const handleEditItem = async () => {
+    try {
+      await api.put(`/superadmin/items/${editItem.id}`, editItemDraft);
+      showToast('Item updated');
+      setEditItem(null);
+      fetchSaItems();
+    } catch (e) {
+      showToast(e.response?.data?.message || 'Failed to update item', 'error');
+    }
+  };
 
   const handleHardDeleteItem = async (id) => {
     if (!window.confirm('Permanently delete this item and all its claims? This cannot be undone.')) return;
@@ -217,6 +229,8 @@ export default function SuperAdminPanel() {
   const [saClaimTotal, setSaClaimTotal] = useState(0);
   const [saClaimLoading, setSaClaimLoading] = useState(false);
   const [saClaimActionLoading, setSaClaimActionLoading] = useState({});
+  const [editClaim, setEditClaim] = useState(null);
+  const [editClaimDraft, setEditClaimDraft] = useState({});
 
   const fetchSaClaims = useCallback(() => {
     setSaClaimLoading(true);
@@ -227,6 +241,17 @@ export default function SuperAdminPanel() {
   }, [saClaimSearch, saClaimPage]);
 
   useEffect(() => { if (tab === 'claims') fetchSaClaims(); }, [tab, fetchSaClaims]);
+
+  const handleEditClaim = async () => {
+    try {
+      await api.put(`/superadmin/claims/${editClaim.id}`, editClaimDraft);
+      showToast('Claim updated');
+      setEditClaim(null);
+      fetchSaClaims();
+    } catch (e) {
+      showToast(e.response?.data?.message || 'Failed to update claim', 'error');
+    }
+  };
 
   const handleDeleteClaim = async (id) => {
     if (!window.confirm('Delete this claim? This cannot be undone.')) return;
@@ -242,75 +267,6 @@ export default function SuperAdminPanel() {
     }
   };
 
-  // ── Ads ───────────────────────────────────────────────────────────────────
-  const [ads, setAds] = useState([]);
-  const [adsLoading, setAdsLoading] = useState(false);
-  const [addingAd, setAddingAd] = useState(false);
-  const [newAd, setNewAd] = useState({ title: '', body: '', link_url: '', image_url: '', active: true });
-  const [editAd, setEditAd] = useState(null);
-  const [editAdDraft, setEditAdDraft] = useState({});
-  const [adActionLoading, setAdActionLoading] = useState({});
-
-  const fetchAds = useCallback(() => {
-    setAdsLoading(true);
-    api.get('/superadmin/ads')
-      .then(r => setAds(r.data))
-      .catch(() => showToast('Failed to load ads', 'error'))
-      .finally(() => setAdsLoading(false));
-  }, []);
-
-  useEffect(() => { if (tab === 'ads') fetchAds(); }, [tab, fetchAds]);
-
-  const handleCreateAd = async () => {
-    try {
-      await api.post('/superadmin/ads', { ...newAd, active: newAd.active ? 1 : 0 });
-      showToast('Ad created');
-      setAddingAd(false);
-      setNewAd({ title: '', body: '', link_url: '', image_url: '', active: true });
-      fetchAds();
-    } catch (e) {
-      showToast(e.response?.data?.message || 'Failed to create ad', 'error');
-    }
-  };
-
-  const handleUpdateAd = async () => {
-    try {
-      await api.put(`/superadmin/ads/${editAd.id}`, editAdDraft);
-      showToast('Ad updated');
-      setEditAd(null);
-      fetchAds();
-    } catch (e) {
-      showToast(e.response?.data?.message || 'Failed to update ad', 'error');
-    }
-  };
-
-  const handleToggleAd = async (ad) => {
-    setAdActionLoading(p => ({ ...p, [ad.id]: 'toggle' }));
-    try {
-      await api.put(`/superadmin/ads/${ad.id}`, { active: ad.active ? 0 : 1 });
-      showToast(ad.active ? 'Ad deactivated' : 'Ad activated');
-      fetchAds();
-    } catch (e) {
-      showToast('Failed to toggle ad', 'error');
-    } finally {
-      setAdActionLoading(p => ({ ...p, [ad.id]: null }));
-    }
-  };
-
-  const handleDeleteAd = async (id) => {
-    if (!window.confirm('Delete this ad?')) return;
-    setAdActionLoading(p => ({ ...p, [id]: 'delete' }));
-    try {
-      await api.delete(`/superadmin/ads/${id}`);
-      showToast('Ad deleted');
-      fetchAds();
-    } catch (e) {
-      showToast('Failed to delete ad', 'error');
-    } finally {
-      setAdActionLoading(p => ({ ...p, [id]: null }));
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
@@ -322,7 +278,7 @@ export default function SuperAdminPanel() {
           Superadmin
         </div>
         <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">SuperAdmin Panel</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-300 mt-0.5">Full control over users, listings, claims, and ads.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-300 mt-0.5">Full control over users, listings, and claims.</p>
       </div>
 
       {/* Tabs */}
@@ -490,6 +446,64 @@ export default function SuperAdminPanel() {
             <span className="text-xs text-slate-500 dark:text-slate-300 ml-auto">{saItemTotal} items total</span>
           </div>
 
+          {/* Edit item form */}
+          {editItem && (
+            <div className="mb-5 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-2xl ring-1 ring-amber-200 dark:ring-amber-800">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Edit Item — {editItem.title}</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <input
+                  className={inputCls}
+                  placeholder="Title"
+                  value={editItemDraft.title ?? editItem.title}
+                  onChange={e => setEditItemDraft(p => ({ ...p, title: e.target.value }))}
+                />
+                <input
+                  className={inputCls}
+                  placeholder="Location"
+                  value={editItemDraft.location ?? editItem.location}
+                  onChange={e => setEditItemDraft(p => ({ ...p, location: e.target.value }))}
+                />
+                <input
+                  className={inputCls}
+                  placeholder="Category"
+                  value={editItemDraft.category ?? editItem.category}
+                  onChange={e => setEditItemDraft(p => ({ ...p, category: e.target.value }))}
+                />
+                <div className="flex gap-2">
+                  <select
+                    className={inputCls}
+                    value={editItemDraft.type ?? editItem.type}
+                    onChange={e => setEditItemDraft(p => ({ ...p, type: e.target.value }))}
+                  >
+                    <option value="lost">Lost</option>
+                    <option value="found">Found</option>
+                  </select>
+                  <select
+                    className={inputCls}
+                    value={editItemDraft.status ?? editItem.status}
+                    onChange={e => setEditItemDraft(p => ({ ...p, status: e.target.value }))}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="claimed">Claimed</option>
+                    <option value="resolved">Resolved</option>
+                  </select>
+                </div>
+                <textarea
+                  className={`${inputCls} sm:col-span-2`}
+                  rows={3}
+                  placeholder="Description"
+                  value={editItemDraft.description ?? editItem.description}
+                  onChange={e => setEditItemDraft(p => ({ ...p, description: e.target.value }))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <button onClick={handleEditItem} className={btnPrimary}>Save Changes</button>
+                <button onClick={() => setEditItem(null)} className={btnSecondary}>Cancel</button>
+              </div>
+            </div>
+          )}
+
           {saItemLoading ? <LoadingSpinner text="Loading items…" /> : (
             <div className="bg-white dark:bg-eggplant-900 rounded-2xl ring-1 ring-slate-200/60 dark:ring-eggplant-600/80 overflow-x-auto">
               <table className="w-full text-sm">
@@ -520,6 +534,14 @@ export default function SuperAdminPanel() {
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{fmt(item.created_at)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5 justify-end">
+                          {!item.deleted_at && (
+                            <button
+                              onClick={() => { setEditItem(item); setEditItemDraft({}); }}
+                              className={btnSecondary}
+                            >
+                              Edit
+                            </button>
+                          )}
                           {item.deleted_at ? (
                             <button
                               onClick={() => handleRestoreItem(item.id)}
@@ -556,6 +578,43 @@ export default function SuperAdminPanel() {
             <span className="text-xs text-slate-500 dark:text-slate-300 ml-auto">{saClaimTotal} claims total</span>
           </div>
 
+          {/* Edit claim form */}
+          {editClaim && (
+            <div className="mb-5 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-2xl ring-1 ring-amber-200 dark:ring-amber-800">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">
+                Edit Claim — {editClaim.claimer_name} on "{editClaim.item_title}"
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <select
+                  className={inputCls}
+                  value={editClaimDraft.status ?? editClaim.status}
+                  onChange={e => setEditClaimDraft(p => ({ ...p, status: e.target.value }))}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+                <input
+                  className={inputCls}
+                  placeholder="Rejection reason (optional)"
+                  value={editClaimDraft.rejection_reason ?? (editClaim.rejection_reason || '')}
+                  onChange={e => setEditClaimDraft(p => ({ ...p, rejection_reason: e.target.value }))}
+                />
+                <textarea
+                  className={`${inputCls} sm:col-span-2`}
+                  rows={3}
+                  placeholder="Message"
+                  value={editClaimDraft.message ?? (editClaim.message || '')}
+                  onChange={e => setEditClaimDraft(p => ({ ...p, message: e.target.value }))}
+                />
+              </div>
+              <div className="flex gap-2">
+                <button onClick={handleEditClaim} className={btnPrimary}>Save Changes</button>
+                <button onClick={() => setEditClaim(null)} className={btnSecondary}>Cancel</button>
+              </div>
+            </div>
+          )}
+
           {saClaimLoading ? <LoadingSpinner text="Loading claims…" /> : (
             <div className="bg-white dark:bg-eggplant-900 rounded-2xl ring-1 ring-slate-200/60 dark:ring-eggplant-600/80 overflow-x-auto">
               <table className="w-full text-sm">
@@ -582,13 +641,21 @@ export default function SuperAdminPanel() {
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 max-w-[200px] truncate text-xs">{claim.message || '—'}</td>
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{fmt(claim.created_at)}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleDeleteClaim(claim.id)}
-                          disabled={!!saClaimActionLoading[claim.id]}
-                          className={btnDanger}
-                        >
-                          Delete
-                        </button>
+                        <div className="flex items-center gap-1.5 justify-end">
+                          <button
+                            onClick={() => { setEditClaim(claim); setEditClaimDraft({}); }}
+                            className={btnSecondary}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClaim(claim.id)}
+                            disabled={!!saClaimActionLoading[claim.id]}
+                            className={btnDanger}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -597,127 +664,6 @@ export default function SuperAdminPanel() {
             </div>
           )}
           <Pagination page={saClaimPage} pages={saClaimPages} onPage={setSaClaimPage} />
-        </div>
-      )}
-
-      {/* ── Ads Tab ──────────────────────────────────────────────────────────── */}
-      {tab === 'ads' && (
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs text-slate-500 dark:text-slate-300">{ads.length} ads total</span>
-            <div className="ml-auto flex gap-2">
-              <button onClick={() => fetchAds()} className={btnSecondary}>Refresh</button>
-              <button onClick={() => { setAddingAd(p => !p); setEditAd(null); }} className={btnPrimary}>
-                {addingAd ? 'Cancel' : '+ New Ad'}
-              </button>
-            </div>
-          </div>
-
-          {/* Create ad form */}
-          {addingAd && (
-            <div className="mb-5 p-5 bg-violet-50 dark:bg-violet-950/30 rounded-2xl ring-1 ring-violet-200 dark:ring-violet-800">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">New Ad</h3>
-              <div className="grid grid-cols-1 gap-3 mb-4">
-                <input className={inputCls} placeholder="Title (max 200 chars)" value={newAd.title} onChange={e => setNewAd(p => ({ ...p, title: e.target.value }))} />
-                <textarea className={inputCls} rows={3} placeholder="Body text" value={newAd.body} onChange={e => setNewAd(p => ({ ...p, body: e.target.value }))} />
-                <input className={inputCls} placeholder="Link URL (optional)" value={newAd.link_url} onChange={e => setNewAd(p => ({ ...p, link_url: e.target.value }))} />
-                <input className={inputCls} placeholder="Image URL (optional)" value={newAd.image_url} onChange={e => setNewAd(p => ({ ...p, image_url: e.target.value }))} />
-                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                  <input type="checkbox" checked={newAd.active} onChange={e => setNewAd(p => ({ ...p, active: e.target.checked }))} className="rounded" />
-                  Active (visible to users)
-                </label>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={handleCreateAd} className={btnPrimary}>Create Ad</button>
-                <button onClick={() => setAddingAd(false)} className={btnSecondary}>Cancel</button>
-              </div>
-            </div>
-          )}
-
-          {/* Edit ad form */}
-          {editAd && (
-            <div className="mb-5 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-2xl ring-1 ring-amber-200 dark:ring-amber-800">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Edit Ad — {editAd.title}</h3>
-              <div className="grid grid-cols-1 gap-3 mb-4">
-                <input className={inputCls} placeholder="Title" value={editAdDraft.title ?? editAd.title} onChange={e => setEditAdDraft(p => ({ ...p, title: e.target.value }))} />
-                <textarea className={inputCls} rows={3} placeholder="Body" value={editAdDraft.body ?? editAd.body} onChange={e => setEditAdDraft(p => ({ ...p, body: e.target.value }))} />
-                <input className={inputCls} placeholder="Link URL" value={editAdDraft.link_url ?? (editAd.link_url || '')} onChange={e => setEditAdDraft(p => ({ ...p, link_url: e.target.value }))} />
-                <input className={inputCls} placeholder="Image URL" value={editAdDraft.image_url ?? (editAd.image_url || '')} onChange={e => setEditAdDraft(p => ({ ...p, image_url: e.target.value }))} />
-                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                  <input type="checkbox" checked={editAdDraft.active !== undefined ? !!editAdDraft.active : !!editAd.active} onChange={e => setEditAdDraft(p => ({ ...p, active: e.target.checked ? 1 : 0 }))} className="rounded" />
-                  Active
-                </label>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={handleUpdateAd} className={btnPrimary}>Save Changes</button>
-                <button onClick={() => setEditAd(null)} className={btnSecondary}>Cancel</button>
-              </div>
-            </div>
-          )}
-
-          {adsLoading ? <LoadingSpinner text="Loading ads…" /> : ads.length === 0 ? (
-            <div className="text-center py-16 text-slate-400 dark:text-slate-500">
-              No ads yet. Create one to get started.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {ads.map(ad => (
-                <div key={ad.id} className={`bg-white dark:bg-eggplant-900 rounded-2xl ring-1 p-5 transition-all ${
-                  ad.active
-                    ? 'ring-slate-200/60 dark:ring-eggplant-600/80'
-                    : 'ring-slate-200/40 dark:ring-eggplant-700/60 opacity-70'
-                }`}>
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div>
-                      <span className="font-bold text-slate-800 dark:text-slate-200">{ad.title}</span>
-                      <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ring-1 ring-inset ${
-                        ad.active
-                          ? 'bg-emerald-100 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:ring-emerald-800'
-                          : 'bg-slate-100 text-slate-500 ring-slate-200 dark:bg-eggplant-800 dark:text-slate-400 dark:ring-eggplant-600'
-                      }`}>
-                        {ad.active ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0">#{ad.id}</span>
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-3 line-clamp-2">{ad.body}</p>
-                  {ad.link_url && (
-                    <p className="text-xs text-violet-600 dark:text-violet-400 mb-1 truncate">{ad.link_url}</p>
-                  )}
-                  {ad.image_url && (
-                    <p className="text-xs text-slate-400 dark:text-slate-500 mb-2 truncate">Image: {ad.image_url}</p>
-                  )}
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-eggplant-700">
-                    <span className="text-xs text-slate-400 dark:text-slate-500 mr-auto">by {ad.created_by_name} · {fmt(ad.created_at)}</span>
-                    <button
-                      onClick={() => handleToggleAd(ad)}
-                      disabled={adActionLoading[ad.id] === 'toggle'}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold ring-1 transition-all disabled:opacity-40 ${
-                        ad.active
-                          ? 'text-amber-600 dark:text-amber-400 ring-amber-300 dark:ring-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/40'
-                          : 'text-emerald-600 dark:text-emerald-400 ring-emerald-300 dark:ring-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
-                      }`}
-                    >
-                      {ad.active ? 'Deactivate' : 'Activate'}
-                    </button>
-                    <button
-                      onClick={() => { setEditAd(ad); setEditAdDraft({}); setAddingAd(false); }}
-                      className={btnSecondary}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteAd(ad.id)}
-                      disabled={adActionLoading[ad.id] === 'delete'}
-                      className={btnDanger}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>
